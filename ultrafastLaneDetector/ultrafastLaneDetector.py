@@ -5,6 +5,8 @@ from enum import Enum
 import cv2
 import time
 import numpy as np
+import math  
+#from  kalamnfilter import KalmanFilter
 
 lane_colors = [(0,0,255),(0,255,0),(255,0,0),(0,255,255)]
 
@@ -14,6 +16,7 @@ tusimple_row_anchor = [ 64,  68,  72,  76,  80,  84,  88,  92,  96, 100, 104, 10
 			220, 224, 228, 232, 236, 240, 244, 248, 252, 256, 260, 264, 268,
 			272, 276, 280, 284]
 culane_row_anchor = [121, 131, 141, 150, 160, 170, 180, 189, 199, 209, 219, 228, 238, 248, 258, 267, 277, 287]
+   
 
 class ModelType(Enum):
 	TUSIMPLE = 0
@@ -125,10 +128,12 @@ class UltrafastLaneDetector():
 		# Parse the output of the model
 
 		processed_output = np.squeeze(output[0])
-		print(processed_output.shape)
-		print(np.min(processed_output), np.max(processed_output))
-		print(processed_output.reshape((1,-1)))
+		#print("Start")
+		#print(processed_output.shape)
+		#print(np.min(processed_output), np.max(processed_output))
+		#print(processed_output.reshape((1,-1)))
 		processed_output = processed_output[:, ::-1, :]
+		#print("here")
 		prob = scipy.special.softmax(processed_output[:-1, :, :], axis=0)
 		idx = np.arange(cfg.griding_num) + 1
 		idx = idx.reshape(-1, 1, 1)
@@ -143,7 +148,7 @@ class UltrafastLaneDetector():
 
 		lanes_points = []
 		lanes_detected = []
-
+		
 		max_lanes = processed_output.shape[1]
 		for lane_num in range(max_lanes):
 			lane_points = []
@@ -157,10 +162,14 @@ class UltrafastLaneDetector():
 					if processed_output[point_num, lane_num] > 0:
 						lane_point = [int(processed_output[point_num, lane_num] * col_sample_w * cfg.img_w / 800) - 1, int(cfg.img_h * (cfg.row_anchor[cfg.cls_num_per_lane-1-point_num]/288)) - 1 ]
 						lane_points.append(lane_point)
+						# try to print the lane points 						
+						#print(lane_points)
+						
 			else:
 				lanes_detected.append(False)
 
 			lanes_points.append(lane_points)
+			
 		return np.array(lanes_points), np.array(lanes_detected)
 
 	@staticmethod
@@ -170,10 +179,67 @@ class UltrafastLaneDetector():
 
 		# Draw a mask for the current lane
 		if(lanes_detected[1] and lanes_detected[2]):
-			lane_segment_img = visualization_img.copy()
+			lane_segment_img = np.empty(visualization_img.shape, dtype=visualization_img.dtype)
+			visualization_img_temp = visualization_img.copy()
 			
 			cv2.fillPoly(lane_segment_img, pts = [np.vstack((lanes_points[1],np.flipud(lanes_points[2])))], color =(255,191,0))
-			visualization_img = cv2.addWeighted(visualization_img, 0.7, lane_segment_img, 0.3, 0)
+			# Detect current lane from the left and the right sides 
+			lineL = lanes_points[1]
+			lineR = lanes_points[2]
+			#Select the the nearest point from the detected lanes 
+			lineLp = lineL[0]
+			lineRp = lineR[0]
+			# Get x and y position for the left and the right lane form the nearest detected points 	
+			X1 = lineLp[0]
+			Y1 = lineLp[1]
+			
+			X2 = lineRp[0]
+			Y2 = lineRp[1]
+			
+			# Select the farest points from the detected lanes 
+			lineLe = lineL[len(lineL)-6]
+			lineRe = lineR[len(lineR)-6] 
+			 
+			#Get X and Y for the left and the right lanes from the farest detected points 
+			X3 = lineLe[0]
+			Y3 = lineLe[1]
+			
+			X4 = lineRe[0]
+			Y4 = lineRe[1]
+			
+			#Get the center points form the the farest detected points form the left and the right 
+			CenterPointEndLaneX =  (X3 + X4)/2 
+			CenterPointEndLaneY =  (Y3 + Y4)/2 
+			
+			#CenterPointStartLaneX = (X1+X2)/2
+			#CenterPointStartLaneY = (Y1 + Y2)/2
+
+			# Determine the angles with the respect to the fixed frame of the camera form the left and the right sides of the stream 
+			angleL = (720 - CenterPointEndLaneY ) / ( CenterPointEndLaneX )
+			angleR = (720 - CenterPointEndLaneY ) / ( 1280 - CenterPointEndLaneX )
+
+			# Calcauating the angles using trigenometry 
+
+			ThetaL = math.tan(angleL)
+			ThetaR = math.tan(angleR)
+
+			AFL = int((ThetaL * 180)/ math.pi )
+			AFR = int((ThetaR * 180)/ math.pi )
+			
+			
+			if (AFL == AFR ):
+				print("Forward")
+				print(AFL - AFR)
+			
+			if(AFL > AFR ):
+				print("Left")
+				print(AFL - AFR)
+			if(AFL < AFR):
+				print("Right") 
+				print(AFL - AFR)
+		
+			visualization_img_temp = cv2.addWeighted(visualization_img_temp, 0.3, lane_segment_img, 0.7, 0)
+			visualization_img[lane_segment_img!=0] = visualization_img_temp[lane_segment_img!=0]
 
 		if(draw_points):
 			for lane_num,lane_points in enumerate(lanes_points):
