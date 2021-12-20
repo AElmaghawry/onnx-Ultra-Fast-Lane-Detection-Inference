@@ -1,0 +1,101 @@
+
+██████╗░███████╗░██████╗░██╗░░░██╗██╗██████╗░███████╗███╗░░░███╗███████╗███╗░░██╗████████╗░██████╗
+██╔══██╗██╔════╝██╔═══██╗██║░░░██║██║██╔══██╗██╔════╝████╗░████║██╔════╝████╗░██║╚══██╔══╝██╔════╝
+██████╔╝█████╗░░██║██╗██║██║░░░██║██║██████╔╝█████╗░░██╔████╔██║█████╗░░██╔██╗██║░░░██║░░░╚█████╗░
+██╔══██╗██╔══╝░░╚██████╔╝██║░░░██║██║██╔══██╗██╔══╝░░██║╚██╔╝██║██╔══╝░░██║╚████║░░░██║░░░░╚═══██╗
+██║░░██║███████╗░╚═██╔═╝░╚██████╔╝██║██║░░██║███████╗██║░╚═╝░██║███████╗██║░╚███║░░░██║░░░██████╔╝
+╚═╝░░╚═╝╚══════╝░░░╚═╝░░░░╚═════╝░╚═╝╚═╝░░╚═╝╚══════╝╚═╝░░░░░╚═╝╚══════╝╚═╝░░╚══╝░░░╚═╝░░░╚═════╝░
+
+██╗███╗░░██╗░██████╗████████╗░█████╗░██╗░░░░░██╗░░░░░░█████╗░████████╗██╗░█████╗░███╗░░██╗
+██║████╗░██║██╔════╝╚══██╔══╝██╔══██╗██║░░░░░██║░░░░░██╔══██╗╚══██╔══╝██║██╔══██╗████╗░██║
+██║██╔██╗██║╚█████╗░░░░██║░░░███████║██║░░░░░██║░░░░░███████║░░░██║░░░██║██║░░██║██╔██╗██║
+██║██║╚████║░╚═══██╗░░░██║░░░██╔══██║██║░░░░░██║░░░░░██╔══██║░░░██║░░░██║██║░░██║██║╚████║
+██║██║░╚███║██████╔╝░░░██║░░░██║░░██║███████╗███████╗██║░░██║░░░██║░░░██║╚█████╔╝██║░╚███║
+╚═╝╚═╝░░╚══╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░╚═╝░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝      
+
+----------------------------------------------------------------------------
+check the coda version form this website and follow the steps for the  Ubuntu 18.04 
+
+https://www.tensorflow.org/install/gpu#install_cuda_with_apt
+
+--------------------------------------------------------------------------------
+
+figure out the required coda for the libraries 
+check this website : https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html
+
+$install onnxruntime-gpu==1.18 
+
+------------------------------------------
+to check the version is working for both of the libraires 
+
+
+$python3 
+
+>> import onnxruntime as ont 
+>> ont.get_device() 
+
+the responde should "GPU"
+
+if it was " CPU" make sure that that uninstalled the onnrumtime and uninstall onnxruntime-gpu again and check it again 
+---------------------------------
+
+$pip3  tensorFlow==1.5.5
+$pip3 tensorflow-gpu==1.5.5 
+-------------------------------------
+
+$ sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran 
+$ sudo apt-get install python3-pip 
+$ sudo pip3 install -U pip testresources setuptools=49.6.0 
+$ sudo pip3 install -U numpy==1.19.4 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+$pip3 install --index-url https://google-coral.github.io/py-repo/ tflite_runtime 
+
+-------------------------------------------------------
+
+
+░█████╗░███╗░░██╗███╗░░██╗██╗░░██╗  ███████╗░█████╗░██████╗░  ███████╗░█████╗░░██████╗████████╗
+██╔══██╗████╗░██║████╗░██║╚██╗██╔╝  ██╔════╝██╔══██╗██╔══██╗  ██╔════╝██╔══██╗██╔════╝╚══██╔══╝
+██║░░██║██╔██╗██║██╔██╗██║░╚███╔╝░  █████╗░░██║░░██║██████╔╝  █████╗░░███████║╚█████╗░░░░██║░░░
+██║░░██║██║╚████║██║╚████║░██╔██╗░  ██╔══╝░░██║░░██║██╔══██╗  ██╔══╝░░██╔══██║░╚═══██╗░░░██║░░░
+╚█████╔╝██║░╚███║██║░╚███║██╔╝╚██╗  ██║░░░░░╚█████╔╝██║░░██║  ██║░░░░░██║░░██║██████╔╝░░░██║░░░
+░╚════╝░╚═╝░░╚══╝╚═╝░░╚══╝╚═╝░░╚═╝  ╚═╝░░░░░░╚════╝░╚═╝░░╚═╝  ╚═╝░░░░░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░
+
+██╗░░░░░░█████╗░███╗░░██╗███████╗  ██████╗░███████╗████████╗███████╗░█████╗░████████╗██╗░█████╗░███╗░░██╗
+██║░░░░░██╔══██╗████╗░██║██╔════╝  ██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗╚══██╔══╝██║██╔══██╗████╗░██║
+██║░░░░░███████║██╔██╗██║█████╗░░  ██║░░██║█████╗░░░░░██║░░░█████╗░░██║░░╚═╝░░░██║░░░██║██║░░██║██╔██╗██║
+██║░░░░░██╔══██║██║╚████║██╔══╝░░  ██║░░██║██╔══╝░░░░░██║░░░██╔══╝░░██║░░██╗░░░██║░░░██║██║░░██║██║╚████║
+███████╗██║░░██║██║░╚███║███████╗  ██████╔╝███████╗░░░██║░░░███████╗╚█████╔╝░░░██║░░░██║╚█████╔╝██║░╚███║
+╚══════╝╚═╝░░╚═╝╚═╝░░╚══╝╚══════╝  ╚═════╝░╚══════╝░░░╚═╝░░░╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝
+
+
+--------------------------------------------------------------
+$git clone https://github.com/AElmaghawry/onnx-Ultra-Fast-Lane-Detection-Inference.git 
+
+after it is been clonec head to the PINTO0309 to download all the pre trained modles 
+then open up the model the suits the lane detection model 
+
+go the directory of the library and type in terminal 
+$./download_tusimple.sh 
+
+if it doesnt work 
+
+install the curl pakage 
+
+-------------------------------------
+
+take the exported model after it has been download with the onnx extention 
+and change the location with the new location 
+
+---------------------------------------
+
+Dont forget to follow the steps for installing the requirments for the ONNX for fast lane detection 
+
+at the end use this to call the function 
+
+$python3 ./imageLaneDetection.py
+or
+#python3 ./videoLaneDetection.py
+
+
+
+
+
